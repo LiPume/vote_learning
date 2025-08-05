@@ -90,7 +90,7 @@ DATABASES = {
         # 数据库使用的字符集
         'CHARSET': 'utf8',
         # 数据库时间日期的时区设定
-        'TIME_ZONE': 'Asia/Hangzhou',
+        'TIME_ZONE': 'Asia/Shanghai',
     }
 }
 
@@ -118,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'zh-hans'
-TIME_ZONE = 'Asia/Chongqing'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
