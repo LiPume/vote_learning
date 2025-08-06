@@ -2,9 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>用户注册</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* 页面主体和背景 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #container {
+            width: 480px;
+            padding: 40px;
+            background: #fff;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #container:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 2.5em;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+
+        .hint {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* 表单区域 */
+        fieldset {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        fieldset:focus-within {
+            border-color: #3498db;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #555;
+            padding: 0 10px;
+        }
+
+        .input-group {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group label {
+            flex-basis: 120px;
+            text-align: right;
+            margin-right: 20px;
+            color: #555;
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="password"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        }
+
+        .captcha-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .captcha-group input {
+            width: 120px;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            margin-right: 15px;
+        }
+
+        .captcha-group img {
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .captcha-group img:hover {
+            transform: scale(1.05);
+        }
+
+        /* 按钮区域 */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .button-group input[type="submit"],
+        .button-group input[type="reset"] {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button-group input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .button-group input[type="submit"]:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .button-group input[type="reset"] {
+            background-color: #ecf0f1;
+            color: #555;
+        }
+
+        .button-group input[type="reset"]:hover {
+            background-color: #bdc3c7;
+            transform: translateY(-2px);
+        }
+
+        /* 底部链接 */
+        .links-group {
+            margin-top: 30px;
+        }
+
+        .links-group a {
+            text-decoration: none;
+            color: #3498db;
+            font-size: 14px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .links-group a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        .welcome-message {
+            font-size: 1.8em; /* 字体增大 */
+            font-weight: 600; /* 加粗 */
+            color: #2c3e50; /* 深色文字，与页面风格更搭 */
+            margin: 0 0 20px 0; /* 底部留出间距 */
+            text-align: center; /* 文本居中 */
+            padding: 10px;
+            border-bottom: 2px solid #3498db; /* 底部添加一条线，增加设计感 */
+            letter-spacing: 1px; /* 字符间距，让文本看起来更舒适 */
+            position: relative;
+            top: -10px; /* 稍微向上移动，与表单保持距离 */
+        }
+    </style>
 </head>
 <body>
-
+    <div id="container">
+        <h1>用户注册</h1>
+        <hr>
+        <p class="hint">{{ hint }}</p>
+        <form action="/register/" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend>用户信息</legend>
+                <div class="input-group">
+                    <label>用户名：</label>
+                    <input type="text" name="username">
+                </div>
+                <div class="input-group">
+                    <label>密码：</label>
+                    <input type="password" name="password">
+                </div>
+                <div class="input-group">
+                    <label>确认密码：</label>
+                    <input type="password" name="password_again">
+                </div>
+                <div class="welcome-message">
+                    <label>欢迎注册新用户</label>
+                </div>
+            </fieldset>
+            <div class="button-group">
+                <input type="submit" value="注册">
+                <input type="reset" value="重置">
+            </div>
+        </form>
+        <div class="links-group">
+            <a href="/">返回首页</a>
+            <a href="/login/">已有账户？去登录</a>
+        </div>
+    </div>
 </body>
 </html>

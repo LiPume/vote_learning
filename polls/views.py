@@ -95,8 +95,57 @@ def login(request: HttpRequest) -> HttpResponse:
 
     return render(request, 'login.html', {'hint': hint})
 
-
 def logout(request):
-    """注销"""
+    """
+    注销用户，清空 session 并重定向到登录页面。
+    """
+    # 1. 清空当前用户的 session
     request.session.flush()
-    return redirect('/')
+
+    # 2. 重定向到登录页面
+    return redirect('/login/')
+
+
+def register(request: HttpRequest) -> HttpResponse:
+    hint = ''
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password_again = request.POST.get('password_again')
+
+        # 1. 验证用户输入
+        # 用户名正则：4-20位字母、数字或下划线
+        username_pattern = re.compile(r'^\w{4,20}$')
+        # 密码正则：6-20位非空白字符
+        password_pattern = re.compile(r'^\S{6,20}$')
+
+        # 验证码校验
+        if not username or not username_pattern.match(username):
+            hint = '用户名格式不正确，请输入4-20位字母、数字或下划线'
+        # 密码校验
+        elif not password or not password_pattern.match(password):
+            hint = '密码格式不正确，请输入6-20位非空白字符'
+        # 两次密码是否一致
+        elif password != password_again:
+            hint = '两次输入的密码不一致'
+        # 用户名是否已存在
+        elif User.objects.filter(username=username).exists():
+            hint = '该用户名已被注册'
+        else:
+            # 2. 所有验证通过，创建新用户
+            try:
+                # 密码加密
+                password_md5 = gen_md5_digest(password)
+                # 创建并保存新用户对象
+                User.objects.create(username=username, password=password_md5)
+                # 注册成功后，可以自动登录并重定向到首页
+                # 或者重定向到登录页面
+                # 这里选择重定向到登录页面
+                return redirect('/login/')
+            except Exception as e:
+                # 捕获可能的异常，比如数据库写入失败
+                hint = f'注册失败，请稍后再试: {e}'
+
+    # 3. 如果是 GET 请求或注册失败，渲染注册页面
+    return render(request, 'register.html', {'hint': hint})
+
