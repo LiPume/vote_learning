@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导出英雄数据</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b111a;
+            color: #d1d8e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* 确保页面至少占满视口高度 */
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #1a2330;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            border: 1px solid rgba(138, 114, 60, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #c8aa6e;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 2em;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .export-button {
+            display: inline-block;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #8a723c; /* 金色按钮背景 */
+            border: 2px solid #c8aa6e; /* 边框颜色 */
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .export-button:hover {
+            background-color: #c8aa6e; /* 鼠标悬停时的背景色 */
+            transform: translateY(-3px); /* 悬停时向上轻微移动 */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+            color: #a0a6b0;
+            text-decoration: none;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #c8aa6e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>导出英雄数据</h1>
+        <p>点击下方按钮，即可下载包含所有英雄信息的 Excel 表格。</p>
+        <!-- 链接到 Django 的 Excel 导出视图 -->
+        <a href="/excel/" class="export-button">下载英雄数据 Excel</a>
+        <a href="/" class="back-link">返回英雄池主页</a>
+    </div>
+</body>
+</html>

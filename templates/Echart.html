@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>老师评价统计</title>
+    <style>
+        /* 全局样式和背景 - 保持与主页一致 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b111a;
+            color: #d1d8e0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #c8aa6e;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ECharts 容器样式 */
+        #main {
+            width: 80%;
+            max-width: 900px;
+            height: 500px;
+            background-color: #1a2330;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            border: 1px solid rgba(138, 114, 60, 0.3);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 返回首页按钮样式 - 保持与主页按钮一致 */
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #8a723c;
+            border: 2px solid #c8aa6e;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #c8aa6e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+    <h1>英雄评价统计图</h1>
+    <div id="main"></div>
+    <p>
+        <a href="/" class="back-button">返回英雄池主页</a>
+    </p>
+
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+    <script>
+        var myChart = echarts.init(document.querySelector('#main'));
+        fetch('/teachers_data/')
+            .then(resp => resp.json())
+            .then(json => {
+                var option = {
+                    // ECharts 主题色 - 金色和暗红色
+                    color: ['#c8aa6e', '#d04343'],
+
+                    title: {
+                        text: '英雄评价统计图',
+                        subtext: '数据来自用户评分',
+                        textStyle: {
+                            color: '#c8aa6e',
+                            fontFamily: 'Arial Black, sans-serif'
+                        },
+                        subtextStyle: {
+                            color: '#a0a6b0'
+                        },
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        },
+                        backgroundColor: 'rgba(26, 35, 48, 0.8)',
+                        borderColor: '#8a723c',
+                        textStyle: {
+                            color: '#d1d8e0'
+                        }
+                    },
+                    legend: {
+                        data:['好评', '差评'],
+                        textStyle: {
+                            color: '#d1d8e0'
+                        },
+                        right: '5%',   // 距离右侧 5%
+                        top: '5%'      // 距离顶部 5%
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: json.names,
+                        axisLabel: {
+                            color: '#a0a6b0',
+                            fontWeight: 'bold'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#444'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: {
+                            color: '#a0a6b0'
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: '#2c3a47'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#444'
+                            }
+                        }
+                    },
+                    series: [
+                        {
+                            name: '好评',
+                            type: 'bar',
+                            data: json.good
+                        },
+                        {
+                            name: '差评',
+                            type: 'bar',
+                            data: json.bad
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>

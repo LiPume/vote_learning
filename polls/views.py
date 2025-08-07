@@ -1,5 +1,8 @@
+import xlwt
+from django.contrib.admin.utils import quote
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
+from io import BytesIO
 
 from polls.models import Subject, Teacher , User
 from polls.utils import Captcha, gen_random_code, gen_md5_digest
@@ -149,3 +152,51 @@ def register(request: HttpRequest) -> HttpResponse:
     # 3. 如果是 GET 请求或注册失败，渲染注册页面
     return render(request, 'register.html', {'hint': hint})
 
+def export_teachers_excel(request):
+    # 创建工作簿
+    wb = xlwt.Workbook()
+    # 添加工作表
+    sheet = wb.add_sheet('英雄信息表')
+    # 查询所有英雄的信息
+    queryset = Teacher.objects.all()
+    # 向Excel表单中写入表头
+    colnames = ('姓名', '介绍', '好评数', '差评数', '职业')
+    for index, name in enumerate(colnames):
+        sheet.write(0, index, name)
+    # 向单元格中写入英雄的数据
+    props = ('name', 'intro', 'good_count', 'bad_count', 'subject')
+    for row, teacher in enumerate(queryset):
+        for col, prop in enumerate(props):
+            value = getattr(teacher, prop, '')
+            if isinstance(value, Subject):
+                value = value.name
+            sheet.write(row + 1, col, value)
+    # 保存Excel
+    buffer = BytesIO()
+    wb.save(buffer)
+    # 将二进制数据写入响应的消息体中并设置MIME类型
+    resp = HttpResponse(buffer.getvalue(), content_type='application/vnd.ms-excel')
+    # 中文文件名需要处理成百分号编码
+    filename = quote('老师.xls')
+    # 通过响应头告知浏览器下载该文件以及对应的文件名
+    resp['content-disposition'] = f'attachment; filename*=utf-8\'\'{filename}'
+    return resp
+
+def show_export_excel_page(request):
+    """
+    渲染导出 Excel 页面
+    """
+    return render(request, 'Excel.html')
+
+def get_teachers_data(request):
+    queryset = Teacher.objects.all()
+    names = [teacher.name for teacher in queryset]
+    good_counts = [teacher.good_count for teacher in queryset]
+    bad_counts = [teacher.bad_count for teacher in queryset]
+    return JsonResponse({'names': names, 'good': good_counts, 'bad': bad_counts})
+
+def show_stats_page(request):
+    """
+    渲染 Echart.html 模板
+    """
+    return render(request, 'Echart.html')
